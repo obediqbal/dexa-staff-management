@@ -2,6 +2,7 @@ import { IsOptional, IsInt, Min, Max, IsIn, IsString } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
 
 export const SORTABLE_FIELDS = [
+    'id',
     'email',
     'firstName',
     'lastName',
