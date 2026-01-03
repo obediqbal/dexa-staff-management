@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, ConflictException, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateStaffDto, UpdateStaffDto, PaginationDto } from './dto';
+import { CreateStaffDto, UpdateStaffDto, FindAllDto } from './dto';
 
 @Injectable()
 export class StaffService {
@@ -29,17 +29,37 @@ export class StaffService {
         return staff;
     }
 
-    async findAll(paginationDto: PaginationDto) {
-        const { page = 1, limit = 10 } = paginationDto;
+    async findAll(findAllDto: FindAllDto) {
+        const {
+            page = 1,
+            limit = 10,
+            sortBy = 'createdAt',
+            sortOrder = 'desc',
+            filterBy,
+        } = findAllDto;
         const skip = (page - 1) * limit;
+
+        const where: Record<string, unknown> = {};
+        if (filterBy) {
+            for (const [key, value] of Object.entries(filterBy)) {
+                if (value !== undefined && value !== null && value !== '') {
+                    if (typeof value === 'string') {
+                        where[key] = { contains: value, mode: 'insensitive' };
+                    } else {
+                        where[key] = value;
+                    }
+                }
+            }
+        }
 
         const [data, total] = await Promise.all([
             this.prisma.staff.findMany({
                 skip,
                 take: limit,
-                orderBy: { createdAt: 'desc' },
+                where,
+                orderBy: { [sortBy]: sortOrder },
             }),
-            this.prisma.staff.count(),
+            this.prisma.staff.count({ where }),
         ]);
 
         const totalPages = Math.ceil(total / limit);

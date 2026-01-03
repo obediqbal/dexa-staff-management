@@ -10,7 +10,7 @@ import {
     ParseUUIDPipe,
 } from '@nestjs/common';
 import { StaffService } from './staff.service';
-import { CreateStaffDto, UpdateStaffDto, PaginationDto } from './dto';
+import { CreateStaffDto, UpdateStaffDto, FindAllDto } from './dto';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
@@ -29,8 +29,8 @@ export class StaffController {
 
     @Get()
     @Roles('ADMIN')
-    findAll(@Query() paginationDto: PaginationDto) {
-        return this.staffService.findAll(paginationDto);
+    findAll(@Query() findAllDto: FindAllDto) {
+        return this.staffService.findAll(findAllDto);
     }
 
     @Get('me')
