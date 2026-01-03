@@ -1,8 +1,7 @@
-import { IsOptional, IsInt, Min, Max, IsIn, IsString } from 'class-validator';
+import { IsOptional, IsInt, Min, Max, IsIn, IsString, IsArray } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
 
 export const SORTABLE_FIELDS = [
-    'id',
     'email',
     'firstName',
     'lastName',
@@ -16,7 +15,7 @@ export const SORTABLE_FIELDS = [
 
 export type SortableField = (typeof SORTABLE_FIELDS)[number];
 
-export type FilterBy = Partial<Record<SortableField | 'id', string | boolean | null>>;
+export type FilterBy = Partial<Record<SortableField, string | boolean | null>>;
 
 export class FindAllDto {
     @IsOptional()
@@ -31,6 +30,16 @@ export class FindAllDto {
     @Min(1)
     @Max(100)
     limit?: number = 10;
+
+    @IsOptional()
+    @IsArray()
+    @IsString({ each: true })
+    @Transform(({ value }) => {
+        if (!value) return undefined;
+        if (Array.isArray(value)) return value;
+        return value.split(',').map((s: string) => s.trim());
+    })
+    ids?: string[];
 
     @IsOptional()
     @IsString()

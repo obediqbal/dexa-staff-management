@@ -33,6 +33,7 @@ export class StaffService {
         const {
             page = 1,
             limit = 10,
+            ids,
             sortBy = 'createdAt',
             sortOrder = 'desc',
             filterBy,
@@ -40,6 +41,11 @@ export class StaffService {
         const skip = (page - 1) * limit;
 
         const where: Record<string, unknown> = {};
+
+        if (ids && ids.length > 0) {
+            where.id = { in: ids };
+        }
+
         if (filterBy) {
             for (const [key, value] of Object.entries(filterBy)) {
                 if (value !== undefined && value !== null && value !== '') {
