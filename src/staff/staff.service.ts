@@ -133,4 +133,16 @@ export class StaffService {
 
         return staff;
     }
+
+    async remove(id: string) {
+        await this.findOne(id);
+
+        const staff = await this.prisma.staff.delete({
+            where: { id },
+        });
+
+        this.logger.log(`Staff deleted: ${staff.email} (${staff.id})`);
+
+        return staff;
+    }
 }

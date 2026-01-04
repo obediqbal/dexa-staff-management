@@ -8,6 +8,7 @@ import {
     Query,
     UseGuards,
     ParseUUIDPipe,
+    Delete,
 } from '@nestjs/common';
 import { StaffService } from './staff.service';
 import { CreateStaffDto, UpdateStaffDto, FindAllDto } from './dto';
@@ -51,5 +52,11 @@ export class StaffController {
         @Body() updateStaffDto: UpdateStaffDto,
     ) {
         return this.staffService.update(id, updateStaffDto);
+    }
+
+    @Delete(':id')
+    @Roles('ADMIN')
+    remove(@Param('id', ParseUUIDPipe) id: string) {
+        return this.staffService.remove(id);
     }
 }
