@@ -50,7 +50,7 @@ export class StaffService {
             for (const [key, value] of Object.entries(filterBy)) {
                 if (value !== undefined && value !== null && value !== '') {
                     if (typeof value === 'string') {
-                        where[key] = { contains: value, mode: 'insensitive' };
+                        where[key] = { contains: value };
                     } else {
                         where[key] = value;
                     }
