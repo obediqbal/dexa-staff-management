@@ -52,7 +52,6 @@ export class FindAllDto {
     sortOrder?: 'asc' | 'desc' = 'desc';
 
     @IsOptional()
-    @IsString()
     @Transform(({ value }) => {
         if (!value) return undefined;
         try {
